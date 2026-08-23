@@ -121,6 +121,10 @@ class MyRankingWatchList(mySQLDataBase.MySQLDataBase):
 
         return self._my_table_sql_ranking_watch_list.get_ranking_watch_list_date_per_quote_isin(str_quote_isin)
 
+    def calculate_mean_score_values(self) -> dict:
+
+        return self._my_table_sql_ranking_watch_list.calculate_mean_score_values()
+
 if __name__ == "__main__":
     myRanking = MyRankingWatchList()
     myRanking.evaluate_overall_credits()

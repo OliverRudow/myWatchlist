@@ -670,7 +670,7 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
 
         return _data
 
-    def calculate_mean_score_value(self) -> None:
+    def calculate_mean_score_values(self) -> dict:
 
         _analyst: str = self._str_ranking_watch_list_analyst_score_column_name
         _derivate: str = self._str_ranking_watch_list_derivate_score_column_name
@@ -695,16 +695,24 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
 
             self._my_sql_connection.commit()
 
-            print(result)
+            result = [round(value, 2) for value in result[0]]
+
+            keys = [self._str_ranking_watch_list_analyst_score_column_name,
+                    self._str_ranking_watch_list_derivate_score_column_name,
+                    self._str_ranking_watch_list_fundamentals_score_column_name,
+                    self._str_ranking_watch_list_performance_score_column_name,
+                    self._str_ranking_watch_list_overall_score_column_name]
+
+            result = dict(zip(keys, result))
+
+            return result
 
         except sqlite3.OperationalError as err:
 
-            print(f'---- Operational Error in {__title__}, {self.calculate_mean_score_value.__name__} ----, \n'
+            print(f'---- Operational Error in {__title__}, {self.calculate_mean_score_values.__name__} ----, \n'
                   f'---- the Text {str_text} has caused an Error {err} ! ----')
 
             exit(1)
-
-
 
 if __name__ == "__main__":
     mySQLDB = mySQLDataBase.MySQLDataBase()

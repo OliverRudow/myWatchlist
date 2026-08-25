@@ -300,13 +300,15 @@ class MyWatchListContainer:
         self._my_time_series.update_industries_change_percent(
             self._my_performance_watch_list.get_industries_average_change_percent())
 
+        self._my_time_series.update_scores()
+
         self._my_time_series.update_date()
 
         self._my_report_top_list.create_overall_report_tables()
 
 
 if __name__ == "__main__":
-    my_watch_list = MyWatchListContainer(None, None,False)
+    my_watch_list = MyWatchListContainer(None, None,True)
     my_watch_list.run_watchlist()
     my_watch_list.close_watchlist()
 

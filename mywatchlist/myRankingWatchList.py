@@ -125,6 +125,10 @@ class MyRankingWatchList(mySQLDataBase.MySQLDataBase):
 
         return self._my_table_sql_ranking_watch_list.calculate_mean_score_values()
 
+    def query_top_ranking_close_earning_day(self) -> list[dict]:
+
+        return self._my_table_sql_ranking_watch_list.query_top_ranking_close_earning_day()
+
 if __name__ == "__main__":
-    myRanking = MyRankingWatchList()
-    myRanking.evaluate_overall_credits()
+    myRanking = MyRankingWatchList('/Users/oliverrudow/PycharmProjects/Data', 'shares_data_base.db')
+    print(myRanking.query_top_ranking_close_earning_day())

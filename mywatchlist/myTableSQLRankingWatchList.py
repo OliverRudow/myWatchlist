@@ -54,20 +54,20 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
     _int_ranking_watch_list_shift_value: str | int = dataclasses.field(repr=False, default='')
 
     # source tables
-    _str_source_table_name_analyst: str = dataclasses.field(repr=False, default="")
+    _str_source_table_name_analyst_eval: str = dataclasses.field(repr=False, default="")
     _str_source_table_analyst_quote_isin_column_name: str = dataclasses.field(repr=False, default='')
     _str_source_table_analyst_absolute_score_column_name: str = dataclasses.field(repr=False, default='')
 
-    _str_source_table_name_derivate: str = dataclasses.field(repr=False, default="")
+    _str_source_table_name_derivate_eval: str = dataclasses.field(repr=False, default="")
     _str_source_table_derivate_quote_isin_column_name: str = dataclasses.field(repr=False, default='')
     _str_source_table_derivate_absolute_score_column_name: str = dataclasses.field(repr=False, default='')
 
-    _str_source_table_name_fundamentals: str = dataclasses.field(repr=False, default="")
+    _str_source_table_name_fundamentals_eval: str = dataclasses.field(repr=False, default="")
     _str_source_table_fundamentals_quote_isin_column_name: str = dataclasses.field(repr=False, default='')
     _str_source_table_fundamentals_surprise_credit_column_name: str = dataclasses.field(repr=False, default='')
     _str_source_table_fundamentals_absolute_score_column_name: str = dataclasses.field(repr=False, default='')
 
-    _str_source_table_name_performance: str = dataclasses.field(repr=False, default="")
+    _str_source_table_name_performance_eval: str = dataclasses.field(repr=False, default="")
     _str_source_table_performance_quote_isin_column_name: str = dataclasses.field(repr=False, default='')
     _str_source_table_performance_absolute_score_column_name: str = dataclasses.field(repr=False, default='')
 
@@ -227,7 +227,7 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
             myRankingWatchListDefinitions.TUPLE_RANKING_WATCH_LIST_SHIFT)
 
     def _init_source_table_analyst(self) -> None:
-        self._str_source_table_name_analyst = myRankingWatchListDefinitions.STR_DATA_BASE_TABLE_NAME_ANALYST
+        self._str_source_table_name_analyst_eval = myRankingWatchListDefinitions.STR_DATA_BASE_TABLE_NAME_ANALYST
 
         self._str_source_table_analyst_quote_isin_column_name = (
             myAnalystWatchListDefinitions.TUPLE_ANALYST_WATCH_LIST_EVAL_QUOTE_ISIN[self._index_tuple.DATA_CONTENT][0])
@@ -236,7 +236,7 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
             myAnalystWatchListDefinitions.TUPLE_ANALYST_WATCH_LIST_EVAL_ABSOLUTE_SCORE[self._index_tuple.DATA_CONTENT][0])
 
     def _init_source_table_derivate(self) -> None:
-        self._str_source_table_name_derivate = myRankingWatchListDefinitions.STR_DATA_BASE_TABLE_NAME_DERIVATE
+        self._str_source_table_name_derivate_eval = myRankingWatchListDefinitions.STR_DATA_BASE_TABLE_NAME_DERIVATE
 
         self._str_source_table_derivate_quote_isin_column_name = (
             myDerivateWatchListDefinitions.TUPLE_DERIVATE_WATCH_LIST_EVAL_QUOTE_ISIN[self._index_tuple.DATA_CONTENT][0])
@@ -246,7 +246,7 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
                 0])
 
     def _init_source_table_fundamentals(self) -> None:
-        self._str_source_table_name_fundamentals = myRankingWatchListDefinitions.STR_DATA_BASE_TABLE_NAME_FUNDAMENTALS
+        self._str_source_table_name_fundamentals_eval = myRankingWatchListDefinitions.STR_DATA_BASE_TABLE_NAME_FUNDAMENTALS
 
         self._str_source_table_fundamentals_quote_isin_column_name = (
             myFundamentalsWatchListDefinitions.TUPLE_FUNDAMENTALS_WATCH_LIST_EVAL_QUOTE_ISIN[self._index_tuple.DATA_CONTENT][0])
@@ -259,7 +259,7 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
                 0])
 
     def _init_source_table_performance(self) -> None:
-        self._str_source_table_name_performance = myRankingWatchListDefinitions.STR_DATA_BASE_TABLE_NAME_PERFORMANCE
+        self._str_source_table_name_performance_eval = myRankingWatchListDefinitions.STR_DATA_BASE_TABLE_NAME_PERFORMANCE
 
         self._str_source_table_performance_quote_isin_column_name = (
             myPerformanceWatchListDefinitions.TUPLE_PERFORMANCE_WATCH_LIST_EVAL_QUOTE_ISIN[self._index_tuple.DATA_CONTENT][0])
@@ -333,30 +333,30 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
     def _update_ranking_table(self) -> None:
 
         # copy quote isin column
-        self._insert_data_from_source_watch_list(self._str_source_table_name_analyst,
-                                              self._str_source_table_analyst_quote_isin_column_name,
-                                              self._str_ranking_watch_list_quote_isin_column_name)
+        self._insert_data_from_source_watch_list(self._str_source_table_name_analyst_eval,
+                                                 self._str_source_table_analyst_quote_isin_column_name,
+                                                 self._str_ranking_watch_list_quote_isin_column_name)
 
         # update analyst score
-        self._update_data_from_source_watch_list(self._str_source_table_name_analyst,
+        self._update_data_from_source_watch_list(self._str_source_table_name_analyst_eval,
                                                  self._str_source_table_analyst_absolute_score_column_name,
                                                  self._str_source_table_analyst_quote_isin_column_name,
                                                  self._str_ranking_watch_list_analyst_score_column_name)
 
         # update derivate score
-        self._update_data_from_source_watch_list(self._str_source_table_name_derivate,
+        self._update_data_from_source_watch_list(self._str_source_table_name_derivate_eval,
                                                  self._str_source_table_derivate_absolute_score_column_name,
                                                  self._str_source_table_derivate_quote_isin_column_name,
                                                  self._str_ranking_watch_list_derivate_score_column_name)
 
         # update fundamentals score
-        self._update_data_from_source_watch_list(self._str_source_table_name_fundamentals,
+        self._update_data_from_source_watch_list(self._str_source_table_name_fundamentals_eval,
                                                  self._str_source_table_fundamentals_absolute_score_column_name,
                                                  self._str_source_table_fundamentals_quote_isin_column_name,
                                                  self._str_ranking_watch_list_fundamentals_score_column_name)
 
         # update performance score
-        self._update_data_from_source_watch_list(self._str_source_table_name_performance,
+        self._update_data_from_source_watch_list(self._str_source_table_name_performance_eval,
                                                  self._str_source_table_performance_absolute_score_column_name,
                                                  self._str_source_table_performance_quote_isin_column_name,
                                                  self._str_ranking_watch_list_performance_score_column_name)
@@ -736,7 +736,7 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
 
             exit(1)
 
-    def query_top_ranking_close_earning_day(self) -> list[dict]:
+    def query_top_ranking_close_earning_day(self) -> list[tuple]:
 
         _str_calendar_data_base_file_name: str = self._str_calendar_data_base_file_name
         _str_calendar_table_name: str = self._str_source_table_name_calendar
@@ -779,14 +779,7 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
 
                 if result.__len__() > 0:
 
-                    keys = [_str_ranking_quote_isin,
-                            _str_ranking_overall_score,
-                            _str_calendar_delta_earning_day,
-                            _str_fundamentals_surprise_credit]
-
-                    for element in result:
-
-                        list_result.append(dict(zip(keys, element)))
+                   list_result = result
 
             except sqlite3.OperationalError as err:
 

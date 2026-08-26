@@ -125,7 +125,7 @@ class MyRankingWatchList(mySQLDataBase.MySQLDataBase):
 
         return self._my_table_sql_ranking_watch_list.calculate_mean_score_values()
 
-    def query_top_ranking_close_earning_day(self) -> list[dict]:
+    def query_top_ranking_close_earning_day(self) -> list[tuple]:
 
         return self._my_table_sql_ranking_watch_list.query_top_ranking_close_earning_day()
 

@@ -12,7 +12,7 @@ import dataclasses
 import sqlite3
 from mydatabase import mySQLDataBase, myTableSQL
 from mysharesdefinition import myRankingWatchListDefinitions, myAnalystWatchListDefinitions, myDerivateWatchListDefinitions, \
-    myFundamentalsWatchListDefinitions, myPerformanceWatchListDefinitions, myCalendarWatchListDefinitions
+    myFundamentalsWatchListDefinitions, myPerformanceWatchListDefinitions, myCalendarWatchListDefinitions, myStaticWatchListDefinitions
 
 
 @dataclasses.dataclass(init=False)
@@ -65,6 +65,7 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
     _str_source_table_name_fundamentals_eval: str = dataclasses.field(repr=False, default="")
     _str_source_table_fundamentals_quote_isin_column_name: str = dataclasses.field(repr=False, default='')
     _str_source_table_fundamentals_surprise_credit_column_name: str = dataclasses.field(repr=False, default='')
+    _str_source_table_fundamentals_ratio_dividend_yield_column_name: str = dataclasses.field(repr=False, default='')
     _str_source_table_fundamentals_absolute_score_column_name: str = dataclasses.field(repr=False, default='')
 
     _str_source_table_name_performance_eval: str = dataclasses.field(repr=False, default="")
@@ -74,6 +75,12 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
     _str_source_table_name_calendar: str = dataclasses.field(repr=False, default="")
     _str_source_table_calendar_quote_isin_column_name: str = dataclasses.field(repr=False, default='')
     _str_source_table_calendar_earnings_delta_date_column_name: str = dataclasses.field(repr=False, default='')
+    _str_source_table_calendar_ex_dividend_delta_date_column_name: str = dataclasses.field(repr=False, default='')
+
+    _str_source_table_name_static: str = dataclasses.field(repr=False, default="")
+    _str_source_table_static_quote_isin_column_name: str = dataclasses.field(repr=False, default='')
+    _str_source_table_static_quote_name_column_name: str = dataclasses.field(repr=False, default='')
+    _str_source_table_static_quote_industry_column_name: str = dataclasses.field(repr=False, default='')
 
     # score table
     _str_score_table_name: str = dataclasses.field(repr=False, default='')
@@ -180,6 +187,8 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
 
         self._init_source_table_calendar()
 
+        self._init_source_table_static()
+
         self._init_score_table()
 
     def _init_ranking_watch_list_columns(self) -> None:
@@ -254,6 +263,9 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
         self._str_source_table_fundamentals_surprise_credit_column_name = (
             myFundamentalsWatchListDefinitions.TUPLE_FUNDAMENTALS_WATCH_LIST_SURPRISE_CREDIT)[self._index_tuple.DATA_CONTENT][0]
 
+        self._str_source_table_fundamentals_ratio_dividend_yield_column_name = (
+            myFundamentalsWatchListDefinitions.TUPLE_FUNDAMENTALS_WATCH_LIST_RATIO_DIVIDEND_YIELD)[self._index_tuple.DATA_CONTENT][0]
+
         self._str_source_table_fundamentals_absolute_score_column_name = (
             myFundamentalsWatchListDefinitions.TUPLE_FUNDAMENTALS_WATCH_LIST_EVAL_ABSOLUTE_SCORE[self._index_tuple.DATA_CONTENT][
                 0])
@@ -279,6 +291,22 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
 
         self._str_source_table_calendar_earnings_delta_date_column_name: str = (
             myCalendarWatchListDefinitions.TUPLE_CALENDAR_WATCH_LIST_EARNINGS_DELTA_DATE)[self._index_tuple.DATA_CONTENT][0]
+
+        self._str_source_table_calendar_ex_dividend_delta_date_column_name: str = (
+            myCalendarWatchListDefinitions.TUPLE_CALENDAR_WATCH_LIST_EX_DIVIDEND_DELTA_DATE)[self._index_tuple.DATA_CONTENT][0]
+
+    def _init_source_table_static(self) -> None:
+
+        self._str_source_table_name_static = myStaticWatchListDefinitions.STR_DATA_BASE_TABLE_NAME
+
+        self._str_source_table_static_quote_isin_column_name = (
+            myStaticWatchListDefinitions.TUPLE_STATIC_WATCH_LIST_QUOTE_ISIN)[self._index_tuple.DATA_CONTENT][0]
+
+        self._str_source_table_static_quote_name_column_name = (
+            myStaticWatchListDefinitions.TUPLE_STATIC_WATCH_LIST_QUOTE_NAME)[self._index_tuple.DATA_CONTENT][0]
+
+        self._str_source_table_static_quote_industry_column_name = (
+            myStaticWatchListDefinitions.TUPLE_STATIC_WATCH_LIST_QUOTE_INDUSTRY)[self._index_tuple.DATA_CONTENT][0]
 
     def _init_score_table(self):
         self._str_score_table_name = myRankingWatchListDefinitions.STR_SCORE_TABLE_NAME
@@ -747,6 +775,11 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
         _str_ranking_quote_isin: str = self._str_ranking_watch_list_quote_isin_column_name
         _str_ranking_overall_score: str = self._str_ranking_watch_list_overall_score_column_name
 
+        _str_static_table_name: str = self._str_source_table_name_static
+        _str_static_quote_isin: str = self._str_source_table_static_quote_isin_column_name
+        _str_static_quote_name: str = self._str_source_table_static_quote_name_column_name
+        _str_static_quote_industry: str = self._str_source_table_static_quote_industry_column_name
+
         _str_fundamentals_table_name: str = myFundamentalsWatchListDefinitions.STR_DATA_BASE_TABLE_NAME
         _str_fundamentals_quote_isin: str = self._str_source_table_fundamentals_quote_isin_column_name
         _str_fundamentals_surprise_credit: str = self._str_source_table_fundamentals_surprise_credit_column_name
@@ -762,13 +795,15 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
 
                 # SQL-Abfrage ausführen
                 _query = f"""
-                                SELECT r.{_str_ranking_quote_isin}, r.{_str_ranking_overall_score}, 
+                                SELECT r.{_str_ranking_quote_isin}, s.{_str_static_quote_name}, s.{_str_static_quote_industry}, r.{_str_ranking_overall_score}, 
                                 c.{_str_calendar_delta_earning_day}, f.{_str_fundamentals_surprise_credit}
                                 FROM {_str_ranking_table_name} AS r
                                     JOIN db_calendar.{_str_calendar_table_name} AS c ON r.{_str_ranking_quote_isin} = c.{_str_calendar_quote_isin}
                                     JOIN {_str_fundamentals_table_name} AS f ON r.{_str_ranking_quote_isin} = f.{_str_fundamentals_quote_isin}
+                                    JOIN {_str_static_table_name} AS s ON r.{_str_ranking_quote_isin} = s.{_str_static_quote_isin}
                                 WHERE r.{_str_ranking_overall_score} > 1
-                                AND c.{_str_calendar_delta_earning_day} BETWEEN -5 AND 20;
+                                AND c.{_str_calendar_delta_earning_day} BETWEEN -5 AND 20
+                                ORDER BY c.{_str_calendar_delta_earning_day};
                             """
 
                 self._my_sql_cursor.execute(_query)
@@ -802,6 +837,81 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
                     pass  # Verhindert Absturz, falls DETACH fehlschlägt, weil ATTACH schon fehlschlug
 
         return list_result
+
+    def query_top_ranking_close_ex_dividend_day(self) -> list[tuple]:
+
+        _str_calendar_data_base_file_name: str = self._str_calendar_data_base_file_name
+        _str_calendar_table_name: str = self._str_source_table_name_calendar
+        _str_calendar_quote_isin: str = self._str_source_table_calendar_quote_isin_column_name
+        _str_calendar_ex_dividend_day: str = self._str_source_table_calendar_ex_dividend_delta_date_column_name
+
+        _str_ranking_table_name: str = self._str_table_name
+        _str_ranking_quote_isin: str = self._str_ranking_watch_list_quote_isin_column_name
+        _str_ranking_overall_score: str = self._str_ranking_watch_list_overall_score_column_name
+
+        _str_static_table_name: str = self._str_source_table_name_static
+        _str_static_quote_isin: str = self._str_source_table_static_quote_isin_column_name
+        _str_static_quote_name: str = self._str_source_table_static_quote_name_column_name
+        _str_static_quote_industry: str = self._str_source_table_static_quote_industry_column_name
+
+        _str_fundamentals_table_name: str = myFundamentalsWatchListDefinitions.STR_DATA_BASE_TABLE_NAME
+        _str_fundamentals_quote_isin: str = self._str_source_table_fundamentals_quote_isin_column_name
+        _str_fundamentals_ratio_dividend_yield: str = self._str_source_table_fundamentals_ratio_dividend_yield_column_name
+
+        list_result = []
+
+        if self._my_sql_connection and self._my_sql_cursor:
+
+            try:
+                # ATTACH ausführen
+                self._my_sql_cursor.execute(
+                    f'ATTACH DATABASE "{_str_calendar_data_base_file_name}" AS db_calendar')
+
+                # SQL-Abfrage ausführen
+                _query = f"""
+                                SELECT r.{_str_ranking_quote_isin}, s.{_str_static_quote_name}, s.{_str_static_quote_industry}, r.{_str_ranking_overall_score}, 
+                                c.{_str_calendar_ex_dividend_day}, f.{_str_fundamentals_ratio_dividend_yield}
+                                FROM {_str_ranking_table_name} AS r
+                                    JOIN db_calendar.{_str_calendar_table_name} AS c ON r.{_str_ranking_quote_isin} = c.{_str_calendar_quote_isin}
+                                    JOIN {_str_fundamentals_table_name} AS f ON r.{_str_ranking_quote_isin} = f.{_str_fundamentals_quote_isin}
+                                    JOIN {_str_static_table_name} AS s ON r.{_str_ranking_quote_isin} = s.{_str_static_quote_isin}
+                                WHERE r.{_str_ranking_overall_score} > 1
+                                AND c.{_str_calendar_ex_dividend_day} BETWEEN 1 AND 20
+                                ORDER BY c.{_str_calendar_ex_dividend_day};
+                            """
+
+                self._my_sql_cursor.execute(_query)
+
+                result = self._my_sql_cursor.fetchall()
+
+                self._my_sql_connection.commit()
+
+                if result.__len__() > 0:
+
+                   list_result = result
+
+            except sqlite3.OperationalError as err:
+
+                print(f'---- Operational Error in {__title__}, {self.query_top_ranking_close_ex_dividend_day.__name__} ----, \n'
+                      f'---- the Text {_query} has caused an Error {err} ! ----')
+
+                exit(1)
+
+            finally:
+                # 6. DETACH im finally-Block garantiert, dass die DB sauber getrennt wird,
+                # selbst wenn oben ein Fehler auftritt.
+                try:
+
+                    self._my_sql_cursor.execute('DETACH DATABASE db_calendar')
+
+                    self._my_sql_connection.commit()
+
+                except sqlite3.OperationalError:
+
+                    pass  # Verhindert Absturz, falls DETACH fehlschlägt, weil ATTACH schon fehlschlug
+
+        return list_result
+
 
 
 if __name__ == "__main__":

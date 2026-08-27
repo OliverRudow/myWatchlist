@@ -128,6 +128,10 @@ class MyReportTopList(mySQLDataBase.MySQLDataBase):
 
         return  self._my_table_sql_report_top_list.get_combined_overall_score_twenty_day_change_array()
 
+    def get_report_top_list_today_largest_relative_change(self) ->list[tuple]:
+
+        return self._my_table_sql_report_top_list.get_report_top_list_today_largest_relative_change()
+
 if __name__ == "__main__":
-    myReportTop = MyReportTopList()
-    myReportTop.create_overall_report_tables()
+    myReportTop = MyReportTopList('/Users/oliverrudow/PycharmProjects/Data', 'shares_data_base.db')
+    print(myReportTop.get_report_top_list_today_largest_relative_change())

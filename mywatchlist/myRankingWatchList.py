@@ -129,6 +129,12 @@ class MyRankingWatchList(mySQLDataBase.MySQLDataBase):
 
         return self._my_table_sql_ranking_watch_list.query_top_ranking_close_earning_day()
 
+    def query_top_ranking_close_ex_dividend_day(self) -> list[tuple]:
+
+        return self._my_table_sql_ranking_watch_list.query_top_ranking_close_ex_dividend_day()
+
 if __name__ == "__main__":
     myRanking = MyRankingWatchList('/Users/oliverrudow/PycharmProjects/Data', 'shares_data_base.db')
     print(myRanking.query_top_ranking_close_earning_day())
+    print('----------------------------------------------')
+    print(myRanking.query_top_ranking_close_ex_dividend_day())

@@ -132,6 +132,12 @@ class MyReportTopList(mySQLDataBase.MySQLDataBase):
 
         return self._my_table_sql_report_top_list.get_report_top_list_today_largest_relative_change()
 
+    def get_report_top_list_today_largest_shift_combined_with_highest_score(self) -> list[tuple]:
+
+        return self._my_table_sql_report_top_list.get_report_top_list_today_largest_shift_combined_with_highest_score()
+
+
 if __name__ == "__main__":
     myReportTop = MyReportTopList('/Users/oliverrudow/PycharmProjects/Data', 'shares_data_base.db')
-    print(myReportTop.get_report_top_list_today_largest_relative_change())
+    # print(myReportTop.get_report_top_list_today_largest_relative_change())
+    print(myReportTop.get_report_top_list_today_largest_shift_combined_with_highest_score())

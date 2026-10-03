@@ -713,7 +713,6 @@ class MyTableSQLReportTopList(myTableSQL.MyTableSQL):
 
             exit(1)
 
-
     def create_report_top_list(self) -> None:
 
         self._insert_data_from_ranking_watch_list()
@@ -752,7 +751,56 @@ class MyTableSQLReportTopList(myTableSQL.MyTableSQL):
         except sqlite3.OperationalError as err:
 
             print(
-                f'---- Operational Error in {__title__}, {self.get_performance_watch_list_today_largest_relative_change.__name__} ----, \n'
+                f'---- Operational Error in {__title__}, {self.get_report_top_list_today_largest_relative_change.__name__} ----, \n'
+                f'---- the Text {_str_text} has caused an Error {err} ! ----')
+
+            exit(1)
+
+        if list_result.__len__() > 0:
+
+            return list_result
+
+        else:
+
+            return []
+
+    def get_report_top_list_today_largest_shift_combined_with_highest_score(self) -> list[tuple]:
+
+        _str_report_top_list_table_name: str = self._str_table_name
+        _str_report_top_list_quote_isin: str = self._str_report_top_list_quote_isin_column_name
+        _str_report_top_list_quote_name: str = self._str_report_top_list_quote_name_column_name
+        _str_report_top_list_quote_industry: str = self._str_report_top_list_quote_industry_column_name
+        _str_report_top_list_current_price: str = self._str_report_top_list_current_price_column_name
+        _str_report_top_list_change_percent: str = self._str_report_top_list_change_percent_column_name
+        _str_report_top_list_fundamentals_score: str = self._str_report_top_list_fundamentals_score_column_name
+        _str_report_top_list_performance_score: str = self._str_report_top_list_performance_score_column_name
+        _str_report_top_list_overall_score: str = self._str_ranking_watch_list_overall_score_column_name
+        _str_report_top_list_shift: str = self._str_ranking_watch_list_shift_column_name
+
+        _str_text = (
+            f'SELECT r.{_str_report_top_list_quote_isin}, r.{_str_report_top_list_quote_name}, r.{_str_report_top_list_quote_industry}, '
+            f'r.{_str_report_top_list_current_price}, r.{_str_report_top_list_change_percent}, r.{_str_report_top_list_fundamentals_score}, '
+            f'r.{_str_report_top_list_performance_score}, r.{_str_report_top_list_overall_score}, r.{_str_report_top_list_shift} '
+            f' FROM {_str_report_top_list_table_name} AS r '
+            f' WHERE r.{_str_report_top_list_overall_score} > 1.0 AND r.{_str_report_top_list_performance_score} > 1.0 AND r.{_str_report_top_list_fundamentals_score} > 1.0 '
+            f' ORDER BY r.{_str_report_top_list_shift} DESC, '
+            f' r.{_str_report_top_list_overall_score} DESC, '
+            f' r.{_str_report_top_list_performance_score} DESC, '
+            f' r.{_str_report_top_list_fundamentals_score} DESC '
+            f' LIMIT 5')
+
+        try:
+
+            self._my_sql_cursor.execute(_str_text)
+
+            list_result = self._my_sql_cursor.fetchall()
+
+            self._my_sql_connection.commit()
+
+        except sqlite3.OperationalError as err:
+
+            print(
+                f'---- Operational Error in {__title__}, {self.get_report_top_list_today_largest_shift_combined_with_highest_score.__name__} ----, \n'
                 f'---- the Text {_str_text} has caused an Error {err} ! ----')
 
             exit(1)

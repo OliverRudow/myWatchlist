@@ -912,7 +912,5 @@ class MyTableSQLRankingWatchList(myTableSQL.MyTableSQL):
 
         return list_result
 
-
-
 if __name__ == "__main__":
     mySQLDB = mySQLDataBase.MySQLDataBase()

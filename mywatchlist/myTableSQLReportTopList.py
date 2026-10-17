@@ -817,32 +817,18 @@ class MyTableSQLReportTopList(myTableSQL.MyTableSQL):
 
         _str_isin = self._str_report_top_list_quote_isin_column_name
         _str_name = self._str_report_top_list_quote_name_column_name
-        _str_industry = self._str_report_top_list_quote_industry_column_name
         _str_curr = self._str_report_top_list_quote_currency_column_name
         _str_price= self._str_report_top_list_current_price_column_name
         _str_cp = self._str_report_top_list_change_percent_column_name
         _str_20d_cp = self._str_report_top_list_change_percent_twenty_day_column_name
-        _str_a_sc = self._str_report_top_list_analyst_score_column_name
-        _str_d_sc = self._str_report_top_list_derivate_score_column_name
-        _str_f_sc = self._str_report_top_list_fundamentals_score_column_name
-        _str_p_sc = self._str_report_top_list_performance_score_column_name
-        _str_o_sc = self._str_report_top_list_overall_score_column_name
-        _str_sh = self._str_report_top_list_shift_column_name
 
         _str_text = (f'SELECT '
                      f' {_str_isin}, '
                      f' {_str_name}, '
-                     f' {_str_industry}, '
                      f' {_str_curr}, '
                      f' {_str_price}, '
                      f' {_str_cp}, '
-                     f' {_str_20d_cp}, '
-                     f' {_str_a_sc}, '
-                     f' {_str_d_sc}, '
-                     f' {_str_f_sc}, '
-                     f' {_str_p_sc}, '
-                     f' {_str_o_sc}, '
-                     f' {_str_sh} '
+                     f' {_str_20d_cp} '
                      f'FROM {self._str_table_name} '
                      f'WHERE {_str_isin} = "{str_isin}" ')
 

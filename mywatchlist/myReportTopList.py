@@ -136,6 +136,10 @@ class MyReportTopList(mySQLDataBase.MySQLDataBase):
 
         return self._my_table_sql_report_top_list.get_report_top_list_today_largest_shift_combined_with_highest_score()
 
+    def get_isin_data_of_combined_overall_score_twenty_day_change_report_data(self, str_isin: str) -> list[tuple]:
+
+        return self._my_table_sql_report_top_list.get_isin_data_of_combined_overall_score_twenty_day_change_report_data(str_isin)
+
 
 if __name__ == "__main__":
     myReportTop = MyReportTopList('/Users/oliverrudow/PycharmProjects/Data', 'shares_data_base.db')

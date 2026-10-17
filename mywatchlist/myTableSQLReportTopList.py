@@ -826,9 +826,7 @@ class MyTableSQLReportTopList(myTableSQL.MyTableSQL):
                      f' {_str_isin}, '
                      f' {_str_name}, '
                      f' {_str_curr}, '
-                     f' {_str_price}, '
-                     f' {_str_cp}, '
-                     f' {_str_20d_cp} '
+                     f' {_str_price} '
                      f'FROM {self._str_table_name} '
                      f'WHERE {_str_isin} = "{str_isin}" ')
 

@@ -11,6 +11,7 @@ __copyright__: str = "Copyright 2026, Brain Center Höfen"
 
 import dataclasses
 import sqlite3
+from datetime import date
 from mydatabase import mySQLDataBase, myTableSQL
 from mysharesdefinition import myRankingWatchListDefinitions, myPerformanceWatchListDefinitions, myReportTopListDefinitions, \
     myStaticWatchListDefinitions
@@ -813,14 +814,12 @@ class MyTableSQLReportTopList(myTableSQL.MyTableSQL):
 
             return []
 
-    def get_isin_data_of_combined_overall_score_twenty_day_change_report_data(self, str_isin: str) -> list:
+    def get_isin_data_of_combined_overall_score_twenty_day_change_report_data(self, str_isin: str) -> dict:
 
         _str_isin = self._str_report_top_list_quote_isin_column_name
         _str_name = self._str_report_top_list_quote_name_column_name
         _str_curr = self._str_report_top_list_quote_currency_column_name
         _str_price= self._str_report_top_list_current_price_column_name
-        _str_cp = self._str_report_top_list_change_percent_column_name
-        _str_20d_cp = self._str_report_top_list_change_percent_twenty_day_column_name
 
         _str_text = (f'SELECT '
                      f' {_str_isin}, '
@@ -838,11 +837,22 @@ class MyTableSQLReportTopList(myTableSQL.MyTableSQL):
 
             self._my_sql_connection.commit()
 
-            return list(_data)
+            keys = [_str_isin,
+                    _str_name,
+                    _str_curr,
+                    _str_price]
+
+            now = str(date.today())
+
+            result = dict(zip(keys, _data))
+
+            result = {'date': now, **result}
+
+            return result
 
         except sqlite3.OperationalError as err:
 
-            print(f'---- Operational Error in {__title__}, {self.get_combined_overall_score_twenty_day_change_report_data.__name__} ----, \n'
+            print(f'---- Operational Error in {__title__}, {self.get_isin_data_of_combined_overall_score_twenty_day_change_report_data.__name__} ----, \n'
                   f'---- the Text {_str_text} has caused an Error {err} ! ----')
 
             exit(1)

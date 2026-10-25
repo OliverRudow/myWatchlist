@@ -85,12 +85,12 @@ class MyRankingWatchList(mySQLDataBase.MySQLDataBase):
 
         if self._list_column_names.__len__() == 0:
 
-            self._list_column_names = myRankingWatchListDefinitions.LIST_STATIC_WATCH_LIST_COLUMN_NAMES
+            self._list_column_names = myRankingWatchListDefinitions.LIST_RANKING_WATCH_LIST_COLUMN_NAMES
 
         elif self._list_column_names.__len__() < len(
-                myRankingWatchListDefinitions.LIST_STATIC_WATCH_LIST_COLUMN_NAMES):
+                myRankingWatchListDefinitions.LIST_RANKING_WATCH_LIST_COLUMN_NAMES):
 
-            self._list_column_names = myRankingWatchListDefinitions.LIST_STATIC_WATCH_LIST_COLUMN_NAMES
+            self._list_column_names = myRankingWatchListDefinitions.LIST_RANKING_WATCH_LIST_COLUMN_NAMES
 
         self._int_num_columns = self._list_column_names.__len__()
 
